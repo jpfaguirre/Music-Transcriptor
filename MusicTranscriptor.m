@@ -47,8 +47,8 @@ classdef MusicTranscriptor < dynamicprops
             self.onSets = getOnsets(self.audio);
             self.instr_num=1;
             self.probable = pitchDetect(self.audio,self.onSets,self.instr_num,self.instrumentPattern(:,self.instr_num),self.fundamental(self.instr_num),self.fs);
-            self.durations = noteDuration([ceil(self.probable(:,2)*self.fs/length(self.probable(:,2)));ceil(length(self.audio)/length(self.probable(:,2)))],self.probable(:,1),self.fs);
-            [self.MIDI,self.blackTime,self.scale] = getMIDI(self.probable(:,2),length(self.audio)/self.fs,self.probable(:,1),self.durations);
+            self.durations = noteDuration(self.probable(:,2), self.probable(:,1),self.audio,self.fs);
+            [self.MIDI,self.blackTime,self.scale] = getMIDI(self.durations(:,2),length(self.audio)/self.fs,self.durations(:,1),self.durations(:,3));
             [self.ColorNote,self.Position,self.Type]=Transcript(self.MIDI,self.blackTime,self.scale);
             
             self.instruments = '';

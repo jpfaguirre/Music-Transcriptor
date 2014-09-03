@@ -34,10 +34,12 @@ function [probable] = pitchDetect(in,onSet,instr_num,instruments,fundamental,fs)
         
             %Poner umbral de correlacion
             %Poner que elija en funcion de la amplitud
-            probable(k,1) = possible(correlation==max(correlation));
+            value_possible =  correlation + possible_amplitud;
+            probable(k,1) = min(possible(value_possible==max(value_possible)));
             probable(k,2) = onSet(j)/fs;
             
-            pattern = denormalize(instruments,spec,possible(correlation==max(correlation)),fundamental,fs);
+            pattern = denormalize(instruments,spec,min(possible(correlation==max(correlation))),fundamental,fs);
+            
             
             %%
             %Corregir esta linea y funca todo de diez
@@ -131,6 +133,8 @@ function [out_pattern] = denormalize(pattern,spec,frequency,fundamental,fs)
     correction = 0;
     peak_location = ind2sub(size(pattern),find(ismember(pattern,peak)));
     pattern = pattern/max(pattern)*max(spec);
+    harmonic_counter = 0;
+    
     for i=1:length(peak)
         if length(peak)~=1
             if i==1
@@ -163,23 +167,39 @@ function [out_pattern] = denormalize(pattern,spec,frequency,fundamental,fs)
         %%Alinear peak con peak y que el resto se cague
         peak_in = findpeaks(spec,'MINPEAKHEIGHT',0.1*max(spec),'MINPEAKDISTANCE',ceil(frequency/fundamental/2*fs/2/length(spec)));%MAL THRESHOLD
         peak_in_location = ind2sub(size(spec),find(ismember(spec,peak_in)));
-        new_peak = interp1(peak_in_location,peak_in_location,frequency/fundamental*peak_location(i),'nearest','extrap');
+        if length(peak_in_location) > 1
+            new_peak = interp1(peak_in_location,peak_in_location,frequency/fundamental*peak_location(i),'nearest','extrap');
+        else
+            new_peak = peak_in_location;
+        end
         
         %Interpolar los ceros que quedan en el medio
         
-        for j = peak_location(i):-1:peak_start
-            position = round(frequency/fundamental*j);
-            out_pattern(position)=out_pattern(position)+pattern(j); 
-        end
-        for j = peak_location(i)+1:1:peak_end
-            position = round(frequency/fundamental*j);
-            %Ver sin extrap si agarra mejor y no condensa toda la infor en
-            %el ultimo (puede estar peteandola por eso
-            if position<=length(out_pattern) && position<=max(peak_in_location+5)
-                out_pattern(position)=out_pattern(position)+pattern(j);
+%         for j = peak_location(i):-1:peak_start
+%             position = round(frequency/fundamental*j);
+%             out_pattern(position)=out_pattern(position)+pattern(j); 
+%         end
+%         for j = peak_location(i)+1:1:peak_end
+%             position = round(frequency/fundamental*j);
+%             %Ver sin extrap si agarra mejor y no condensa toda la infor en
+%             %el ultimo (puede estar peteandola por eso
+%             if position<=length(out_pattern) && position<=max(peak_in_location+5)
+%                 out_pattern(position)=out_pattern(position)+pattern(j);
+%             end
+%         end
+        if harmonic_counter<length(peak_in)
+            for j = peak_location(i):-1:peak_start
+                out_pattern(new_peak-peak_location(i)+j)=out_pattern(new_peak-peak_location(i)+j)+pattern(j); 
             end
+            for j = peak_location(i)+1:1:peak_end
+                %Ver sin extrap si agarra mejor y no condensa toda la infor en
+                %el ultimo (puede estar peteandola por eso
+                if (new_peak-peak_location(i)+j)<=length(out_pattern) && (new_peak-peak_location(i)+j)<=max(peak_in_location+5)
+                    out_pattern((new_peak-peak_location(i)+j))=out_pattern((new_peak-peak_location(i)+j))+pattern(j);
+                end
+            end
+            harmonic_counter = harmonic_counter + 1;
         end
-        
     end
 end
 
