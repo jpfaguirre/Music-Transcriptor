@@ -32,7 +32,7 @@ function onSet = getOnsets(in)
         peak_height = time(fpeak);
         
         for p=fpeak:length(time)
-            if time(p) < (3/4*peak_height)
+            if time(p) < 0.45
                 flow = p;
                 break
             end
