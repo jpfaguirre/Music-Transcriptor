@@ -14,7 +14,7 @@ function [duration] = noteDuration(times,notes,audio,fs)
     k = 1;
     for i=1:length(times)
         if ~isempty(current_notes)
-            signal = audio(ceil(times(i)*fs)-4*4096:(ceil(times(i)*fs)-3*4096));
+            signal = audio(max(ceil(times(i)*fs)-4*4096,1):(max(ceil(times(i)*fs)-4*4096,1)+4096));
             spec = abs(fftshift(fft(signal)))/length(signal);
             spec = spec(round(length(spec)/2):end)/max(spec);
             spec = spec/max(spec);

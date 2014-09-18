@@ -189,7 +189,9 @@ function [out_pattern] = denormalize(pattern,spec,frequency,fundamental,fs)
 %         end
         if harmonic_counter<length(peak_in)
             for j = peak_location(i):-1:peak_start
-                out_pattern(new_peak-peak_location(i)+j)=out_pattern(new_peak-peak_location(i)+j)+pattern(j); 
+                if new_peak-peak_location(i)+j>0
+                    out_pattern(new_peak-peak_location(i)+j)=out_pattern(new_peak-peak_location(i)+j)+pattern(j); 
+                end
             end
             for j = peak_location(i)+1:1:peak_end
                 %Ver sin extrap si agarra mejor y no condensa toda la infor en

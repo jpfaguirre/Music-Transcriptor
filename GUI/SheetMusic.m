@@ -89,6 +89,11 @@ classdef SheetMusic < handle
                     obj.yOffset = -6;
                     obj.yVernier = 0;
                 case 3
+                    [obj.img,~,obj.alpha] = imread(['half_',type,'.png']);
+                    obj.xSize = 0.06;
+                    obj.ySize = 0.15;
+                    obj.yOffset = 0;
+                    obj.yVernier = 0.014;
                 case 2%'blanca'
                     [obj.img,~,obj.alpha] = imread(['half_',type,'.png']);
                     obj.xSize = 0.06;
@@ -178,7 +183,11 @@ classdef SheetMusic < handle
             C = imagesc([obj.xPosition obj.xPosition+obj.xSize],[obj.topLineY+(obj.yPosition+obj.yOffset-3)*0.019-obj.yVernier obj.topLineY-obj.ySize+(obj.yPosition+obj.yOffset-3)*0.019-obj.yVernier],obj.img, 'parent',obj.h,'AlphaData',obj.alpha);
             uistack(C, 'bottom'); % At the bottom prevents transparency issues
             if (obj.yPosition>10 || obj.yPosition<2) && ~(mod(obj.yPosition,2)) && obj.noteType == 1
-                line([obj.xPosition-0.01 obj.xPosition+obj.xSize+0.01], [obj.topLineY-obj.ySize+(obj.yPosition+obj.yOffset-3)*0.019-obj.yVernier+0.027 obj.topLineY-obj.ySize+(obj.yPosition+obj.yOffset-3)*0.019-obj.yVernier+0.027], 'color', 'k', 'Parent', obj.h);
+                if (length([obj.xPosition-0.01 obj.xPosition+obj.xSize+0.01]) == length([obj.topLineY-obj.ySize+(obj.yPosition+obj.yOffset-3)*0.019-obj.yVernier+0.027 obj.topLineY-obj.ySize+(obj.yPosition+obj.yOffset-3)*0.019-obj.yVernier+0.027]))
+                    line([obj.xPosition-0.01 obj.xPosition+obj.xSize+0.01], [obj.topLineY-obj.ySize+(obj.yPosition+obj.yOffset-3)*0.019-obj.yVernier+0.027 obj.topLineY-obj.ySize+(obj.yPosition+obj.yOffset-3)*0.019-obj.yVernier+0.027], 'color', 'k', 'Parent', obj.h);
+                else
+                    disp('hola');
+                end
             end
             % Possibly transform note
             %N = obj.transformNote(N, varargin{:});

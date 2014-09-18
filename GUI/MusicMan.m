@@ -22,7 +22,7 @@ function varargout = MusicMan(varargin)
 
 % Edit the above text to modify the response to help MusicMan
 
-% Last Modified by GUIDE v2.5 28-May-2014 13:47:22
+% Last Modified by GUIDE v2.5 15-Sep-2014 20:48:22
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -120,5 +120,19 @@ function transcript_btn_Callback(hObject, eventdata, handles)
 % --- Executes on button press in load_btn.
 function load_btn_Callback(hObject, eventdata, handles)
 % hObject    handle to load_btn (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in AnteriorButton.
+function AnteriorButton_Callback(hObject, eventdata, handles)
+% hObject    handle to AnteriorButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in PosteriorButton.
+function PosteriorButton_Callback(hObject, eventdata, handles)
+% hObject    handle to PosteriorButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)

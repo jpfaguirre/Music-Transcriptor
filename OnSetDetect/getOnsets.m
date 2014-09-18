@@ -32,16 +32,19 @@ function onSet = getOnsets(in)
         peak_height = time(fpeak);
         
         for p=fpeak:length(time)
-            if time(p) < 0.45
+            if time(p) < 0.5*time(fpeak)
                 flow = p;
                 break
             end
         end
+        if fpeak > flow
+            flow = length(time);
+        end
         
         peak_low = time(flow);
-        
         [~,onSet(i)] = max(time(fpeak:flow));
         onSet(i) = onSet(i) + fpeak;
+        
 
         if i~=1 && onSet(i) == onSet(i-1)
             break
